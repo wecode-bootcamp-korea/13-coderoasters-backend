@@ -207,7 +207,7 @@ ALTER TABLE coffees
 CREATE TABLE equipment_images
 (
     `id`            INT            NOT NULL    AUTO_INCREMENT, 
-    `image_url`     VARCHAR(45)    NOT NULL, 
+    `image_url`     VARCHAR(300)    NOT NULL, 
     `equipment_id`  INT            NOT NULL, 
     PRIMARY KEY (id)
 );
