@@ -43,11 +43,10 @@ model coffees {
   decaf             Int
   espresso          Int
   roaster_id        Int
-  product_id        Int
+  product_id        Int      @unique
   products          products @relation(fields: [product_id], references: [id])
   roasters          roasters @relation(fields: [roaster_id], references: [id])
 
-  @@index([product_id], name: "FK_coffees_product_id_products_id")
   @@index([roaster_id], name: "FK_coffees_roaster_id_roasters_id")
 }
 
@@ -80,11 +79,9 @@ model equipments {
   type             String
   title            String
   note             String
-  product_id       Int
+  product_id       Int                @unique
   products         products           @relation(fields: [product_id], references: [id])
   equipment_images equipment_images[]
-
-  @@index([product_id], name: "FK_equipments_product_id_products_id")
 }
 
 model grounds {
@@ -136,8 +133,8 @@ model products {
   created_at     DateTime?             @default(now())
   updated_at     DateTime?
   deleted_at     DateTime?
-  coffees        coffees[]
-  equipments     equipments[]
+  coffees        coffees?
+  equipments     equipments?
   order_products order_products[]
 }
 

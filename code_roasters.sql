@@ -135,7 +135,7 @@ CREATE TABLE equipments
     `type`         VARCHAR(200)     NOT NULL, 
     `title`        VARCHAR(200)     NOT NULL, 
     `note`         VARCHAR(2000)    NOT NULL, 
-    `product_id`   INT              NOT NULL, 
+    `product_id`   INT              UNIQUE NOT NULL, 
     PRIMARY KEY (id)
 );
 
@@ -190,7 +190,7 @@ CREATE TABLE coffees
     `decaf`              TINYINT          NOT NULL, 
     `espresso`           TINYINT          NOT NULL, 
     `roaster_id`         INT              NOT NULL, 
-    `product_id`         INT              NOT NULL, 
+    `product_id`         INT              UNIQUE NOT NULL, 
     PRIMARY KEY (id)
 );
 
