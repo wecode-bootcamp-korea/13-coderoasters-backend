@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model addresses {
+  id             Int      @id @default(autoincrement())
+  recipient      String
+  address        String
+  detail_address String
+  zip_code       String
+  user_id        Int
+  users          users    @relation(fields: [user_id], references: [id])
+  orders         orders[]
+
+  @@index([user_id], name: "FK_addresses_user_id_users_id")
+}
+
+model coffees {
+  id                Int      @id @default(autoincrement())
+  taste             String
+  roasting_schedule String
+  process           String
+  elevation         String
+  variety           String
+  note              String
+  trade_roast_level String
+  coffee_taste_like String
+  country           String
+  region            String
+  sub_region        String
+  type              String
+  bag_weight        String
+  available_ground  Int
+  cold_brew         Int
+  decaf             Int
+  espresso          Int
+  roaster_id        Int
+  product_id        Int
+  products          products @relation(fields: [product_id], references: [id])
+  roasters          roasters @relation(fields: [roaster_id], references: [id])
+
+  @@index([product_id], name: "FK_coffees_product_id_products_id")
+  @@index([roaster_id], name: "FK_coffees_roaster_id_roasters_id")
+}
+
+model delivery_infos {
+  id               Int            @id @default(autoincrement())
+  company          String
+  order_product_id Int
+  tracking_number  String
+  order_products   order_products @relation(fields: [order_product_id], references: [id])
+
+  @@index([order_product_id], name: "FK_delivery_infos_order_product_id_order_products_id")
+}
+
+model equipment_images {
+  id           Int        @id @default(autoincrement())
+  image_url    String
+  equipment_id Int
+  equipments   equipments @relation(fields: [equipment_id], references: [id])
+
+  @@index([equipment_id], name: "FK_equipment_images_equipment_id_equipments_id")
+}
+
+model equipments {
+  id               Int                @id @default(autoincrement())
+  brand            String
+  description      String
+  type             String
+  title            String
+  note             String
+  product_id       Int
+  products         products           @relation(fields: [product_id], references: [id])
+  equipment_images equipment_images[]
+
+  @@index([product_id], name: "FK_equipments_product_id_products_id")
+}
+
+model grounds {
+  id             Int              @id @default(autoincrement())
+  name           String
+  order_products order_products[]
+}
+
+model order_products {
+  id             Int              @id @default(autoincrement())
+  order_id       Int
+  product_id     Int
+  ground_id      Int?
+  grounds        grounds?         @relation(fields: [ground_id], references: [id])
+  orders         orders           @relation(fields: [order_id], references: [id])
+  products       products         @relation(fields: [product_id], references: [id])
+  delivery_infos delivery_infos[]
+
+  @@index([ground_id], name: "FK_order_products_ground_id_grounds_id")
+  @@index([order_id], name: "FK_order_products_order_id_orders_id")
+  @@index([product_id], name: "FK_order_products_product_id_products_id")
+}
+
+model orders {
+  id             Int              @id @default(autoincrement())
+  date           DateTime
+  user_id        Int
+  status_id      Int
+  address_id     Int
+  addresses      addresses        @relation(fields: [address_id], references: [id])
+  statuses       statuses         @relation(fields: [status_id], references: [id])
+  users          users            @relation(fields: [user_id], references: [id])
+  order_products order_products[]
+
+  @@index([address_id], name: "FK_orders_address_id_addresses_id")
+  @@index([status_id], name: "FK_orders_status_id_statuses_id")
+  @@index([user_id], name: "FK_orders_user_id_users_id")
+}
+
+model products {
+  id             Int                   @id @default(autoincrement())
+  name           String
+  price          Float
+  image_url      String
+  product_type   products_product_type
+  coffees        coffees[]
+  equipments     equipments[]
+  order_products order_products[]
+}
+
+model regions {
+  id       Int        @id @default(autoincrement())
+  name     String
+  roasters roasters[]
+}
+
+model roasters {
+  id        Int       @id @default(autoincrement())
+  name      String
+  image_url String
+  location  String
+  fun_fact  String
+  region_id Int
+  regions   regions   @relation(fields: [region_id], references: [id])
+  coffees   coffees[]
+
+  @@index([region_id], name: "FK_roasters_region_id_regions_id")
+}
+
+model statuses {
+  id     Int      @id @default(autoincrement())
+  name   String
+  orders orders[]
+}
+
+model users {
+  id            Int         @id @default(autoincrement())
+  first_name    String
+  last_name     String
+  email         String
+  mobile_number String
+  password      String
+  addresses     addresses[]
+  orders        orders[]
+}
+
+enum products_product_type {
+  coffee
+  equipment
+}
