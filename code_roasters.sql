@@ -5,7 +5,10 @@ CREATE TABLE products
     `name`          VARCHAR(200)     NOT NULL, 
     `price`         FLOAT            NOT NULL, 
     `image_url`     VARCHAR(1000)    NOT NULL, 
-    `product_type`  ENUM('coffee', 'equipment')  NOT NULL, 
+    `product_type`  ENUM('coffee', 'equipment')             NOT NULL, 
+    `created_at`    DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT 'default current time stamp', 
+    `updated_at`    DATETIME         ON UPDATE CURRENT_TIMESTAMP COMMENT 'on update current time', 
+    `deleted_at`    DATETIME         DEFAULT NULL, 
     PRIMARY KEY (id)
 );
 
@@ -16,9 +19,12 @@ CREATE TABLE users
     `id`             INT             NOT NULL    AUTO_INCREMENT, 
     `first_name`     VARCHAR(50)     NOT NULL, 
     `last_name`      VARCHAR(50)     NOT NULL, 
-    `email`          VARCHAR(50)     NOT NULL, 
+    `email`          VARCHAR(300)    UNIQUE NOT NULL    COMMENT '이메일은 유니크', 
     `mobile_number`  VARCHAR(50)     NOT NULL, 
     `password`       VARCHAR(200)    NOT NULL, 
+    `created_at`    DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT 'default current time stamp', 
+    `updated_at`    DATETIME         ON UPDATE CURRENT_TIMESTAMP COMMENT 'on update current time', 
+    `deleted_at`    DATETIME         DEFAULT NULL, 
     PRIMARY KEY (id)
 );
 
@@ -31,6 +37,9 @@ CREATE TABLE addresses
     `address`         VARCHAR(200)    NOT NULL, 
     `detail_address`  VARCHAR(200)    NOT NULL, 
     `zip_code`        VARCHAR(200)    NOT NULL, 
+    `created_at`    DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT 'default current time stamp', 
+    `updated_at`    DATETIME         ON UPDATE CURRENT_TIMESTAMP COMMENT 'on update current time', 
+    `deleted_at`    DATETIME         DEFAULT NULL, 
     `user_id`         INT             NOT NULL, 
     PRIMARY KEY (id)
 );
@@ -41,14 +50,14 @@ ALTER TABLE addresses
 
 
 -- products Table Create SQL
-CREATE TABLE statuses
+CREATE TABLE order_statuses
 (
     `id`    INT             NOT NULL    AUTO_INCREMENT, 
     `name`  VARCHAR(200)    NOT NULL, 
     PRIMARY KEY (id)
 );
 
-ALTER TABLE statuses COMMENT '결제/ 배송/ 상태 값 저장 테이블';
+ALTER TABLE order_statuses COMMENT '결제/ 배송/ 상태 값 저장 테이블';
 
 
 -- products Table Create SQL
@@ -75,7 +84,9 @@ ALTER TABLE grounds COMMENT '커피 그라인딩 타입';
 CREATE TABLE orders
 (
     `id`          INT         NOT NULL    AUTO_INCREMENT, 
-    `date`        DATETIME    NOT NULL, 
+    `created_at`    DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT 'default current time stamp', 
+    `updated_at`    DATETIME         ON UPDATE CURRENT_TIMESTAMP COMMENT 'on update current time', 
+    `deleted_at`    DATETIME         DEFAULT NULL, 
     `user_id`     INT         NOT NULL, 
     `status_id`   INT         NOT NULL, 
     `address_id`  INT         NOT NULL, 
@@ -91,19 +102,22 @@ ALTER TABLE orders
         REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 ALTER TABLE orders
-    ADD CONSTRAINT FK_orders_status_id_statuses_id FOREIGN KEY (status_id)
-        REFERENCES statuses (id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+    ADD CONSTRAINT FK_orders_status_id_order_statuses_id FOREIGN KEY (status_id)
+        REFERENCES order_statuses (id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- products Table Create SQL
 CREATE TABLE roasters
 (
-    `id`         INT             NOT NULL    AUTO_INCREMENT, 
-    `name`       VARCHAR(20)     NOT NULL, 
-    `image_url`  VARCHAR(200)    NOT NULL, 
-    `location`   VARCHAR(200)    NOT NULL, 
-    `fun_fact`   VARCHAR(200)    NOT NULL, 
-    `region_id`  INT             NOT NULL, 
+    `id`          INT             NOT NULL    AUTO_INCREMENT, 
+    `name`        VARCHAR(20)     NOT NULL, 
+    `image_url`   VARCHAR(200)    NOT NULL, 
+    `location`    VARCHAR(200)    NOT NULL, 
+    `fun_fact`    VARCHAR(200)    NULL, 
+    `created_at`    DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT 'default current time stamp', 
+    `updated_at`    DATETIME         ON UPDATE CURRENT_TIMESTAMP COMMENT 'on update current time', 
+    `deleted_at`    DATETIME         DEFAULT NULL,  
+    `region_id`   INT             NOT NULL, 
     PRIMARY KEY (id)
 );
 
@@ -117,7 +131,7 @@ CREATE TABLE equipments
 (
     `id`           INT              NOT NULL    AUTO_INCREMENT, 
     `brand`        VARCHAR(200)     NOT NULL, 
-    `description`  VARCHAR(200)     NOT NULL, 
+    `description`  VARCHAR(200)     NULL, 
     `type`         VARCHAR(200)     NOT NULL, 
     `title`        VARCHAR(200)     NOT NULL, 
     `note`         VARCHAR(2000)    NOT NULL, 
@@ -133,10 +147,11 @@ ALTER TABLE equipments
 -- products Table Create SQL
 CREATE TABLE order_products
 (
-    `id`          INT    NOT NULL    AUTO_INCREMENT, 
-    `order_id`    INT    NOT NULL, 
-    `product_id`  INT    NOT NULL, 
-    `ground_id`   INT    NULL        COMMENT 'coffee_ground_type', 
+    `id`             INT    NOT NULL    AUTO_INCREMENT, 
+    `product_count`  INT    DEFAULT 1   COMMENT 'default = 1', 
+    `order_id`       INT    NOT NULL, 
+    `product_id`     INT    NOT NULL, 
+    `ground_id`      INT    NULL        COMMENT 'coffee_ground_type', 
     PRIMARY KEY (id)
 );
 
@@ -160,14 +175,14 @@ CREATE TABLE coffees
     `taste`              VARCHAR(200)     NOT NULL, 
     `roasting_schedule`  VARCHAR(200)     NOT NULL, 
     `process`            VARCHAR(200)     NOT NULL, 
-    `elevation`          VARCHAR(200)     NOT NULL, 
-    `variety`            VARCHAR(200)     NOT NULL, 
-    `note`               VARCHAR(2000)    NOT NULL, 
+    `elevation`          VARCHAR(200)     NULL, 
+    `variety`            VARCHAR(200)     NULL, 
+    `note`               VARCHAR(2000)    NULL, 
     `trade_roast_level`  VARCHAR(200)     NOT NULL, 
     `coffee_taste_like`  VARCHAR(200)     NOT NULL, 
     `country`            VARCHAR(200)     NOT NULL, 
     `region`             VARCHAR(200)     NOT NULL, 
-    `sub_region`         VARCHAR(200)     NOT NULL, 
+    `sub_region`         VARCHAR(200)     NULL, 
     `type`               VARCHAR(200)     NOT NULL, 
     `bag_weight`         VARCHAR(200)     NOT NULL, 
     `available_ground`   TINYINT          NOT NULL, 
@@ -207,8 +222,11 @@ CREATE TABLE delivery_infos
 (
     `id`                INT             NOT NULL    AUTO_INCREMENT, 
     `company`           VARCHAR(200)    NOT NULL, 
-    `order_product_id`  INT             NOT NULL, 
     `tracking_number`   VARCHAR(200)    NOT NULL, 
+    `created_at`    DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT 'default current time stamp', 
+    `updated_at`    DATETIME         ON UPDATE CURRENT_TIMESTAMP COMMENT 'on update current time', 
+    `deleted_at`    DATETIME         DEFAULT NULL, 
+    `order_product_id`  INT             NOT NULL, 
     PRIMARY KEY (id)
 );
 

@@ -8,13 +8,16 @@ datasource db {
 }
 
 model addresses {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   recipient      String
   address        String
   detail_address String
   zip_code       String
+  created_at     DateTime? @default(now())
+  updated_at     DateTime?
+  deleted_at     DateTime?
   user_id        Int
-  users          users    @relation(fields: [user_id], references: [id])
+  users          users     @relation(fields: [user_id], references: [id])
   orders         orders[]
 
   @@index([user_id], name: "FK_addresses_user_id_users_id")
@@ -25,14 +28,14 @@ model coffees {
   taste             String
   roasting_schedule String
   process           String
-  elevation         String
-  variety           String
-  note              String
+  elevation         String?
+  variety           String?
+  note              String?
   trade_roast_level String
   coffee_taste_like String
   country           String
   region            String
-  sub_region        String
+  sub_region        String?
   type              String
   bag_weight        String
   available_ground  Int
@@ -51,8 +54,11 @@ model coffees {
 model delivery_infos {
   id               Int            @id @default(autoincrement())
   company          String
-  order_product_id Int
   tracking_number  String
+  created_at       DateTime?      @default(now())
+  updated_at       DateTime?
+  deleted_at       DateTime?
+  order_product_id Int
   order_products   order_products @relation(fields: [order_product_id], references: [id])
 
   @@index([order_product_id], name: "FK_delivery_infos_order_product_id_order_products_id")
@@ -70,7 +76,7 @@ model equipment_images {
 model equipments {
   id               Int                @id @default(autoincrement())
   brand            String
-  description      String
+  description      String?
   type             String
   title            String
   note             String
@@ -89,6 +95,7 @@ model grounds {
 
 model order_products {
   id             Int              @id @default(autoincrement())
+  product_count  Int?             @default(1)
   order_id       Int
   product_id     Int
   ground_id      Int?
@@ -104,17 +111,19 @@ model order_products {
 
 model orders {
   id             Int              @id @default(autoincrement())
-  date           DateTime
+  created_at     DateTime?        @default(now())
+  updated_at     DateTime?
+  deleted_at     DateTime?
   user_id        Int
   status_id      Int
   address_id     Int
   addresses      addresses        @relation(fields: [address_id], references: [id])
-  statuses       statuses         @relation(fields: [status_id], references: [id])
+  order_statuses order_statuses   @relation(fields: [status_id], references: [id])
   users          users            @relation(fields: [user_id], references: [id])
   order_products order_products[]
 
   @@index([address_id], name: "FK_orders_address_id_addresses_id")
-  @@index([status_id], name: "FK_orders_status_id_statuses_id")
+  @@index([status_id], name: "FK_orders_status_id_order_statuses_id")
   @@index([user_id], name: "FK_orders_user_id_users_id")
 }
 
@@ -124,6 +133,9 @@ model products {
   price          Float
   image_url      String
   product_type   products_product_type
+  created_at     DateTime?             @default(now())
+  updated_at     DateTime?
+  deleted_at     DateTime?
   coffees        coffees[]
   equipments     equipments[]
   order_products order_products[]
@@ -136,33 +148,39 @@ model regions {
 }
 
 model roasters {
-  id        Int       @id @default(autoincrement())
-  name      String
-  image_url String
-  location  String
-  fun_fact  String
-  region_id Int
-  regions   regions   @relation(fields: [region_id], references: [id])
-  coffees   coffees[]
+  id         Int       @id @default(autoincrement())
+  name       String
+  image_url  String
+  location   String
+  fun_fact   String?
+  created_at DateTime? @default(now())
+  updated_at DateTime?
+  deleted_at DateTime?
+  region_id  Int
+  regions    regions   @relation(fields: [region_id], references: [id])
+  coffees    coffees[]
 
   @@index([region_id], name: "FK_roasters_region_id_regions_id")
-}
-
-model statuses {
-  id     Int      @id @default(autoincrement())
-  name   String
-  orders orders[]
 }
 
 model users {
   id            Int         @id @default(autoincrement())
   first_name    String
   last_name     String
-  email         String
+  email         String      @unique
   mobile_number String
   password      String
+  created_at    DateTime?   @default(now())
+  updated_at    DateTime?
+  deleted_at    DateTime?
   addresses     addresses[]
   orders        orders[]
+}
+
+model order_statuses {
+  id     Int      @id @default(autoincrement())
+  name   String
+  orders orders[]
 }
 
 enum products_product_type {
