@@ -234,3 +234,23 @@ ALTER TABLE delivery_infos
     ADD CONSTRAINT FK_delivery_infos_order_product_id_order_products_id FOREIGN KEY (order_product_id)
         REFERENCES order_products (id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
+-- products Table Create SQL
+CREATE TABLE filter_categories
+(
+    `id`    INT            NOT NULL    AUTO_INCREMENT, 
+    `name`  VARCHAR(45)    NULL, 
+    PRIMARY KEY (id)
+);
+
+-- products Table Create SQL
+CREATE TABLE filter_options
+(
+    `id`                  INT            NOT NULL    AUTO_INCREMENT, 
+    `name`                VARCHAR(45)    NULL, 
+    `filter_category_id`  INT            NULL, 
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE filter_options
+    ADD CONSTRAINT FK_filter_options_filter_category_id_filter_categories_id FOREIGN KEY (filter_category_id)
+        REFERENCES filter_categories (id) ON DELETE RESTRICT ON UPDATE RESTRICT;

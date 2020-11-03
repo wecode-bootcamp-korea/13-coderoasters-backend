@@ -180,6 +180,21 @@ model order_statuses {
   orders orders[]
 }
 
+model filter_categories {
+  id             Int              @id @default(autoincrement())
+  name           String?
+  filter_options filter_options[]
+}
+
+model filter_options {
+  id                 Int                @id @default(autoincrement())
+  name               String?
+  filter_category_id Int?
+  filter_categories  filter_categories? @relation(fields: [filter_category_id], references: [id])
+
+  @@index([filter_category_id], name: "FK_filter_options_filter_category_id_filter_categories_id")
+}
+
 enum products_product_type {
   coffee
   equipment
