@@ -130,7 +130,7 @@ model products {
   price          Float
   image_url      String
   product_type   products_product_type
-  sales_amount   Int?
+  sales_amount   Int?                  @default(0)
   created_at     DateTime?             @default(now())
   updated_at     DateTime?
   deleted_at     DateTime?
