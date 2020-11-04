@@ -1,9 +1,11 @@
 const express = require('express')
 const routes = require('./routes')
+const cors = require('cors')
 const logger = require('morgan')('dev')
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 app.use(logger)
 app.use(routes)

@@ -92,7 +92,7 @@ model grounds {
 
 model order_products {
   id             Int              @id @default(autoincrement())
-  product_count  Int?             @default(1)
+  quantity       Int?
   order_id       Int
   product_id     Int
   ground_id      Int?
@@ -113,8 +113,8 @@ model orders {
   deleted_at     DateTime?
   user_id        Int
   status_id      Int
-  address_id     Int
-  addresses      addresses        @relation(fields: [address_id], references: [id])
+  address_id     Int?
+  addresses      addresses?       @relation(fields: [address_id], references: [id])
   order_statuses order_statuses   @relation(fields: [status_id], references: [id])
   users          users            @relation(fields: [user_id], references: [id])
   order_products order_products[]

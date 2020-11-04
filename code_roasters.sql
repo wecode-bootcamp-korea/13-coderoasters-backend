@@ -90,7 +90,7 @@ CREATE TABLE orders
     `deleted_at`    DATETIME         DEFAULT NULL, 
     `user_id`     INT         NOT NULL, 
     `status_id`   INT         NOT NULL, 
-    `address_id`  INT         NOT NULL, 
+    `address_id`  INT         NULL, 
     PRIMARY KEY (id)
 );
 
@@ -149,7 +149,7 @@ ALTER TABLE equipments
 CREATE TABLE order_products
 (
     `id`             INT    NOT NULL    AUTO_INCREMENT, 
-    `product_count`  INT    DEFAULT 1   COMMENT 'default = 1', 
+    `quantity`  INT    DEFAULT 1   COMMENT 'default = 1', 
     `order_id`       INT    NOT NULL, 
     `product_id`     INT    NOT NULL, 
     `ground_id`      INT    NULL        COMMENT 'coffee_ground_type', 
