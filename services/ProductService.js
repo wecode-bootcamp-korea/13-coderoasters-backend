@@ -5,7 +5,7 @@ const OFFSET = 18
 
 const filterCoffees = (query) => {
   return prisma.products.findMany({
-    skip: query.page ? Number(query.page) - 1 * OFFSET : 0,
+    skip: query.page ? (Number(query.page) - 1) * OFFSET : 0,
     take: 18,
     ...makeDataForSort(query),
     select: {
@@ -43,7 +43,7 @@ const findProduct = async (productId) => {
         roasters: true,
       },
     })
-    foundProduct.coffee = coffee
+    foundProduct.coffees = coffee
   }
 
   if (foundProduct.product_type === 'equipment') {
