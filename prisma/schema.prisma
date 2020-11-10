@@ -44,6 +44,7 @@ model coffees {
   espresso           Int
   roaster_id         Int
   product_id         Int      @unique
+  cluster_id         Int?
   products           products @relation(fields: [product_id], references: [id])
   roasters           roasters @relation(fields: [roaster_id], references: [id])
 
