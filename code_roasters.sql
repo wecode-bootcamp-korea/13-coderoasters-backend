@@ -17,9 +17,9 @@ CREATE TABLE products
 -- products Table Create SQL
 CREATE TABLE users
 (
-    `id`             INT             NOT NULL    AUTO_INCREMENT, 
-    `first_name`     VARCHAR(50)     NOT NULL, 
-    `last_name`      VARCHAR(50)     NOT NULL, 
+    `id`             INT             DEFAULT NULL    AUTO_INCREMENT, 
+    `first_name`     VARCHAR(50)     DEFAULT NULL, 
+    `last_name`      VARCHAR(50)     DEFAULT NULL, 
     `email`          VARCHAR(300)    UNIQUE NOT NULL    COMMENT '이메일은 유니크', 
     `mobile_number`  VARCHAR(50)     DEFAULT NULL, 
     `password`       VARCHAR(200)    NOT NULL, 
