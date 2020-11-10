@@ -192,6 +192,7 @@ CREATE TABLE coffees
     `espresso`           TINYINT          NOT NULL, 
     `roaster_id`         INT              NOT NULL, 
     `product_id`         INT              UNIQUE NOT NULL, 
+    `cluster_id`         INT              NULL,
     PRIMARY KEY (id)
 );
 
