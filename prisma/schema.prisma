@@ -163,11 +163,11 @@ model roasters {
 
 model users {
   id            Int         @id @default(autoincrement())
-  first_name    String
-  last_name     String
+  first_name    String?
+  last_name     String?
   email         String      @unique
-  mobile_number String
-  password      String
+  mobile_number String?
+  password      String?
   created_at    DateTime?   @default(now())
   updated_at    DateTime?
   deleted_at    DateTime?
