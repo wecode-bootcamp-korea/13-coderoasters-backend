@@ -56,7 +56,22 @@ const logIn = async (req, res, next) => {
   }
 }
 
+const googleLogIn = async (req, res, next) => {
+  try {
+    const { email } = req.payload
+    const foundUser = await UserService.findUser({ email })
+    
+    if (!foundUser) await UserService.createUser({ email })
+   
+    const { id } = await UserService.findUser({ email })
+    const token = jwt.sign({ id }, AUTH_TOKEN_SALT, { expiresIn: '24h' })
+    res.status(200).json({ message: 'login success!', token })
+  } catch (err) {
+    next(err)
+  }
+}
 module.exports = {
   signUp,
   logIn,
+  googleLogIn,
 }

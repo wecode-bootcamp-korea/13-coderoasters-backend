@@ -1,4 +1,4 @@
-const { errorGenerator } = require('../utils')
+const errorGenerator = require('../utils/errorGenerator')
 const { UserService } = require('../services')
 const { AUTH_TOKEN_SALT } = process.env
 const jwt = require('jsonwebtoken')
