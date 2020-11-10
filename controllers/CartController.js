@@ -1,5 +1,5 @@
 const { CartService } = require('../services')
-const { errorGenerator, validateFields } = require('../utils')
+const { errorGenerator } = require('../utils')
 
 const getCartItems = async (req, res, next) => {
   try {
@@ -23,22 +23,25 @@ const createOrAddCartItem = async (req, res, next) => {
 
     if (cartItems.length) {
       const [{ id: orderId }] = cartItems
-      const addProductCart = await CartService.addProductCart({
+      await CartService.addProductCart({
         orderId : orderId,
         productId,
         quantity,
         groundId,
       })
-      return res.status(200).json({ message: 'success', cartItem: addProductCart })
+
+      req.userId = userId
+      return next()
     } 
   
-    const createdProductCart = await CartService.createProductCart({
+    await CartService.createProductCart({
       userId,
       productId,
       quantity,
       groundId,
     })
-    return res.status(201).json({ message: 'success', cartItem: createdProductCart })
+    req.userId = userId
+    return next()
   
   } catch (err) {
     next(err)

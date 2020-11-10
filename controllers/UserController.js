@@ -41,7 +41,7 @@ const logIn = async (req, res, next) => {
   try {
     const { email, password: inputPassword } = req.body
     const foundUser = await UserService.findUser({ email })
-
+    
     if (!foundUser) errorGenerator({ statusCode: 400, message: 'client input invalid' })
 
     const { id, password: hashedPassword } = foundUser
