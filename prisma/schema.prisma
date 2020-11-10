@@ -24,28 +24,28 @@ model addresses {
 }
 
 model coffees {
-  id                 Int      @id @default(autoincrement())
-  taste              String
-  roasting_schedule  String
-  process            String
-  elevation          String?
-  variety            String?
-  note               String?
-  roast_level        String?
-  coffee_tastes_like String?
-  country            String
-  region             String
-  sub_region         String?
-  type               String
-  bag_weight         String
-  available_ground   Int
-  cold_brew          Int
-  decaf              Int
-  espresso           Int
-  roaster_id         Int
-  product_id         Int      @unique
-  products           products @relation(fields: [product_id], references: [id])
-  roasters           roasters @relation(fields: [roaster_id], references: [id])
+  id                Int      @id @default(autoincrement())
+  taste             String
+  roasting_schedule String
+  process           String
+  elevation         String?
+  variety           String?
+  note              String?
+  trade_roast_level String
+  coffee_taste_like String
+  country           String
+  region            String
+  sub_region        String?
+  type              String
+  bag_weight        String
+  available_ground  Int
+  cold_brew         Int
+  decaf             Int
+  espresso          Int
+  roaster_id        Int
+  product_id        Int      @unique
+  products          products @relation(fields: [product_id], references: [id])
+  roasters          roasters @relation(fields: [roaster_id], references: [id])
 
   @@index([roaster_id], name: "FK_coffees_roaster_id_roasters_id")
 }
