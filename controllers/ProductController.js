@@ -23,8 +23,9 @@ const getCoffeeList = async (req, res, next) => {
     }
 
     const filteredCoffeeList = await ProductService.filterCoffees(modifiedQuery)
+    const filteredCoffeeCount = await ProductService.countCoffees(modifiedQuery)
 
-    res.status(200).json({ message: 'coffee list found', filteredCoffeeList })
+    res.status(200).json({ message: 'coffee list found', filteredCoffeeCount, filteredCoffeeList })
   } catch (err) {
     next(err)
   }
