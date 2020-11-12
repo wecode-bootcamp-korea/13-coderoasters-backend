@@ -70,6 +70,17 @@ const updateClusterId = async (req, res, next) => {
   }
 }
 
+const recommendCoffee = async (req, res, next) => {
+  try {
+    const { payload } = req.body
+    const foundProductID = await ProductService.findRecommendCoffee(payload)
+
+    res.status(200).json({ message: 'recommended coffee found', foundProductID })
+  } catch (err) {
+    next(err)
+  }
+}
+
 module.exports = {
   getProductDetail,
   getCoffeeList,
@@ -77,4 +88,5 @@ module.exports = {
   getGroundList,
   getOptionList,
   updateClusterId,
+  recommendCoffee,
 }
