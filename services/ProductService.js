@@ -33,6 +33,12 @@ const filterCoffees = (query) => {
   })
 }
 
+const countCoffees = (query) => {
+  return prisma.products.count({
+    where: { ...makeDataForFilter(query) },
+  })
+}
+
 const findProduct = async (productId) => {
   const foundProduct = await prisma.products.findOne({
     where: { id: Number(productId) },
@@ -70,7 +76,7 @@ const findEquipments = () => {
 }
 
 const findGrounds = () => {
-  return prisma.grounds.findMany()
+  return prisma.grounds.findMany({ where: { NOT: { id: 8 } } })
 }
 
 const findOptions = () => {
@@ -127,5 +133,5 @@ module.exports = {
   findGrounds,
   findOptions,
   updateClusterId,
-  findRecommendCoffee,
+  countCoffees,
 }
