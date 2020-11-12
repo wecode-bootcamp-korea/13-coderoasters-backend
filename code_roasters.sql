@@ -17,12 +17,12 @@ CREATE TABLE products
 -- products Table Create SQL
 CREATE TABLE users
 (
-    `id`             INT             DEFAULT NULL    AUTO_INCREMENT, 
+    `id`             INT             NOT NULL    AUTO_INCREMENT, 
     `first_name`     VARCHAR(50)     DEFAULT NULL, 
     `last_name`      VARCHAR(50)     DEFAULT NULL, 
     `email`          VARCHAR(300)    UNIQUE NOT NULL    COMMENT '이메일은 유니크', 
     `mobile_number`  VARCHAR(50)     DEFAULT NULL, 
-    `password`       VARCHAR(200)    NOT NULL, 
+    `password`       VARCHAR(200)    DEFAULT NULL, 
     `created_at`    DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT 'default current time stamp', 
     `updated_at`    DATETIME         ON UPDATE CURRENT_TIMESTAMP COMMENT 'on update current time', 
     `deleted_at`    DATETIME         DEFAULT NULL, 
@@ -224,7 +224,7 @@ CREATE TABLE delivery_infos
 (
     `id`                INT             NOT NULL    AUTO_INCREMENT, 
     `company`           VARCHAR(200)    NOT NULL, 
-    `tracking_number`   VARCHAR(200)    NOT NULL, 
+    `tracking_number`   VARCHAR(200)    DEFAULT '#923849102124', 
     `created_at`    DATETIME         DEFAULT CURRENT_TIMESTAMP COMMENT 'default current time stamp', 
     `updated_at`    DATETIME         ON UPDATE CURRENT_TIMESTAMP COMMENT 'on update current time', 
     `deleted_at`    DATETIME         DEFAULT NULL, 
