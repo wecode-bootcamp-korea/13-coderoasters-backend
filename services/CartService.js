@@ -12,7 +12,9 @@ const findCartItems = (userId) => {
         include: {
           products: {
             include: {
-              coffees: true,
+              coffees: {
+                include: { roasters: true }
+              },
               equipments: true
             }
           },
@@ -33,6 +35,7 @@ const convertCartItems = (order) => {
       'imageUrl':products.image_url,
       'quantity':quantity,
       'bagWeight':products.coffees.bag_weight,
+      'roasters':products.coffees.roasters.name,
       'ground':{
         'id':grounds.id,
         'name':grounds.name
@@ -125,7 +128,17 @@ const productQuantityHandler = (fields) => {
     }
   })
 }
- 
+
+const changeToPurchaseOrderStatus = (orderId) => {
+  return prisma.orders.update({
+    where: {
+      id: orderId
+    },
+    data: {
+      order_statuses: { connect: { id: 2 } }
+    }
+  })
+}
 module.exports = {
   findCartItems,
   convertCartItems,
@@ -133,4 +146,5 @@ module.exports = {
   addProductCart,
   deleteProductCart,
   productQuantityHandler,
+  changeToPurchaseOrderStatus
 }
