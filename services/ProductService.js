@@ -134,4 +134,5 @@ module.exports = {
   findOptions,
   updateClusterId,
   countCoffees,
+  findRecommendCoffee,
 }
