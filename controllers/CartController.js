@@ -26,13 +26,15 @@ const createdOrAddCartItem = async (req, res, next) => {
 
     if (cartItems.length) {
       const [{ id: orderId }] = cartItems
-      const addProductCart = await CartService.addProductCart({
+      await CartService.addProductCart({
         orderId : orderId,
         productId,
         quantity,
         groundId,
       })
-      return res.status(200).json({ message: 'success', cartItem: addProductCart })
+
+      req.userId = userId
+      return next()
     } 
   
     const createProductCart = await CartService.createProductCart({
@@ -119,6 +121,7 @@ const changedToPurchaseOrderStatus = async (req, res, next) => {
     next(err)
   }
 }
+
 module.exports = {
   getCartItems,
   createdOrAddCartItem,
