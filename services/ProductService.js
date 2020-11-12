@@ -2,6 +2,7 @@ const prisma = require('../prisma')
 const makeDataForFilter = require('../utils/makeDataForFilter')
 const makeDataForSort = require('../utils/makeDataForSort')
 const { getClusterId } = require('../utils/assignCluster')
+const makeDataForRecommend = require('../utils/makeDataForRecommend')
 const OFFSET = 18
 
 const filterCoffees = (query) => {
@@ -69,7 +70,7 @@ const findEquipments = () => {
 }
 
 const findGrounds = () => {
-  return prisma.grounds.findMany({})
+  return prisma.grounds.findMany()
 }
 
 const findOptions = () => {
@@ -105,6 +106,20 @@ const updateClusterId = async () => {
   await Promise.all(prismaRequest)
 }
 
+const findRecommendCoffee = async (payload) => {
+  const { decaf } = payload
+  const productObj = makeDataForRecommend(payload)
+  const clusterId = getClusterId(productObj)
+  const coffeeCount = await prisma.coffees.count({
+    where: { cluster_id: clusterId, decaf },
+  })
+  const foundCoffee = await prisma.coffees.findFirst({
+    where: { cluster_id: clusterId, decaf },
+    skip: Math.floor(Math.random() * coffeeCount),
+  })
+  return foundCoffee.product_id
+}
+
 module.exports = {
   findProduct,
   filterCoffees,
@@ -112,4 +127,5 @@ module.exports = {
   findGrounds,
   findOptions,
   updateClusterId,
+  findRecommendCoffee,
 }
