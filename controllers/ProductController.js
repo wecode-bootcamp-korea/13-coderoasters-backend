@@ -6,8 +6,7 @@ const getProductDetail = async (req, res, next) => {
     const { productId } = req.params
     const foundProduct = await ProductService.findProduct(productId)
 
-    if (!foundProduct)
-      errorGenerator({ statusCode: 404, message: 'product not found' })
+    if (!foundProduct) errorGenerator({ statusCode: 404, message: 'product not found' })
 
     res.status(200).json({ message: 'product found', foundProduct })
   } catch (err) {
@@ -18,7 +17,12 @@ const getProductDetail = async (req, res, next) => {
 const getCoffeeList = async (req, res, next) => {
   try {
     const { query } = req
-    const filteredCoffeeList = await ProductService.filterCoffees(query)
+    const modifiedQuery = {}
+    for (const key in query) {
+      modifiedQuery[key.toLowerCase()] = query[key]
+    }
+
+    const filteredCoffeeList = await ProductService.filterCoffees(modifiedQuery)
 
     res.status(200).json({ message: 'coffee list found', filteredCoffeeList })
   } catch (err) {
@@ -30,9 +34,7 @@ const getEquipmentList = async (req, res, next) => {
   try {
     const foundEquipmentList = await ProductService.findEquipments()
 
-    res
-      .status(200)
-      .json({ message: 'equipment list found', foundEquipmentList })
+    res.status(200).json({ message: 'equipment list found', foundEquipmentList })
   } catch (eer) {
     next(err)
   }
@@ -58,10 +60,21 @@ const getOptionList = async (req, res, next) => {
   }
 }
 
+const updateClusterId = async (req, res, next) => {
+  try {
+    await ProductService.updateClusterId()
+
+    res.status(200).json({ message: 'cluster id was updated' })
+  } catch (err) {
+    next(err)
+  }
+}
+
 module.exports = {
   getProductDetail,
   getCoffeeList,
   getEquipmentList,
   getGroundList,
   getOptionList,
+  updateClusterId,
 }
