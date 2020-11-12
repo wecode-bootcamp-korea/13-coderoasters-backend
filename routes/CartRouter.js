@@ -5,8 +5,9 @@ const { validateToken } = require('../middleware')
 const { CartController } = require('../controllers')
 
 router.get('/', validateToken, CartController.getCartItems)
-router.post('/', validateToken, CartController.createOrAddCartItem)
-router.delete('/', validateToken, CartController.deleteCartItem)
+router.post('/', validateToken, CartController.createdOrAddCartItem)
+router.delete('/', validateToken, CartController.deletedCartItem)
 router.patch('/count', validateToken, CartController.increaseAndDecreaseProductQuantity)
+router.patch('/', validateToken, CartController.changedToPurchaseOrderStatus)
 
 module.exports = router

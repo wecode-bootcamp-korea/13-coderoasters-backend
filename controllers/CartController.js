@@ -1,10 +1,13 @@
 const { CartService } = require('../services')
-const { errorGenerator, validateFields } = require('../utils')
+const { errorGenerator } = require('../utils')
 
 const getCartItems = async (req, res, next) => {
   try {
     const { id: userId } = req.foundUser
     const cartItems = await CartService.findCartItems(userId)
+
+    if (!cartItems.length) return res.status(400).json({ message: 'not found cart', cartItems })
+
     const convertCartItems = await CartService.convertCartItems(cartItems)
 
     return res.status(200).json({ message: 'success', cartItems: convertCartItems })
@@ -13,7 +16,7 @@ const getCartItems = async (req, res, next) => {
   }
 }
 
-const createOrAddCartItem = async (req, res, next) => {
+const createdOrAddCartItem = async (req, res, next) => {
   try {
     const { id: userId } = req.foundUser
     const { productId, quantity, groundId } = req.body
@@ -32,20 +35,19 @@ const createOrAddCartItem = async (req, res, next) => {
       return res.status(200).json({ message: 'success', cartItem: addProductCart })
     } 
   
-    const createdProductCart = await CartService.createProductCart({
+    const createProductCart = await CartService.createProductCart({
       userId,
       productId,
       quantity,
       groundId,
     })
-    return res.status(201).json({ message: 'success', cartItem: createdProductCart })
-  
+    return res.status(200).json({ message: 'success', cartItem: createProductCart })
   } catch (err) {
     next(err)
   }
 }
 
-const deleteCartItem = async (req, res, next) => {
+const deletedCartItem = async (req, res, next) => {
   try {
     const { id: userId } = req.foundUser
     const { productId, groundId } = req.body
@@ -102,9 +104,25 @@ const increaseAndDecreaseProductQuantity = async (req, res, next) => {
   }
 }
 
+const changedToPurchaseOrderStatus = async (req, res, next) => {
+  try {
+    const { id: userId } = req.foundUser
+    const cartItems = await CartService.findCartItems(userId)
+
+    if (!cartItems.length) return res.status(400).json({ message: 'not found cart', cartItems }) 
+
+    const [{ id: orderId }] = cartItems
+    const order = await CartService.changeToPurchaseOrderStatus(orderId)
+
+    return res.status(200).json({ message: 'success', order })
+  } catch (err) { 
+    next(err)
+  }
+}
 module.exports = {
   getCartItems,
-  createOrAddCartItem,
-  deleteCartItem,
-  increaseAndDecreaseProductQuantity
+  createdOrAddCartItem,
+  deletedCartItem,
+  increaseAndDecreaseProductQuantity,
+  changedToPurchaseOrderStatus
 }
