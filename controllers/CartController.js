@@ -5,6 +5,9 @@ const getCartItems = async (req, res, next) => {
   try {
     const { id: userId } = req.foundUser
     const cartItems = await CartService.findCartItems(userId)
+    
+    if (!cartItems.length) return res.status(400).json({ message: 'not found cart', cartItems })
+
     const convertCartItems = await CartService.convertCartItems(cartItems)
 
     return res.status(200).json({ message: 'success', cartItems: convertCartItems })
@@ -102,9 +105,25 @@ const increaseAndDecreaseProductQuantity = async (req, res, next) => {
   }
 }
 
+const changeToPurchaseOrderStatus = async (req, res, next) => {
+  try {
+    const { id: userId } = req.foundUser
+    const cartItems = await CartService.findCartItems(userId)
+
+    if (!cartItems.length) return res.status(400).json({ message: 'not found cart', cartItems }) 
+
+    const [{ id: orderId }] = cartItems
+    const order = await CartService.changeToPurchaseOrderStatus(orderId)
+
+    return res.status(200).json({ message: 'success', order })
+  } catch (err) { 
+    next(err)
+  }
+}
 module.exports = {
   getCartItems,
   createOrAddCartItem,
   deleteCartItem,
-  increaseAndDecreaseProductQuantity
+  increaseAndDecreaseProductQuantity,
+  changeToPurchaseOrderStatus
 }

@@ -126,7 +126,17 @@ const productQuantityHandler = (fields) => {
     }
   })
 }
- 
+
+const changeToPurchaseOrderStatus = (orderId) => {
+  return prisma.orders.update({
+    where: {
+      id: orderId
+    },
+    data: {
+      order_statuses: { connect: { id: 2 } }
+    }
+  })
+}
 module.exports = {
   findCartItems,
   convertCartItems,
@@ -134,4 +144,5 @@ module.exports = {
   addProductCart,
   deleteProductCart,
   productQuantityHandler,
+  changeToPurchaseOrderStatus
 }

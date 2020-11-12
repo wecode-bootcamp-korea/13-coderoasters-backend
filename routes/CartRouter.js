@@ -8,5 +8,5 @@ router.get('/', validateToken, CartController.getCartItems)
 router.post('/', validateToken, CartController.createOrAddCartItem)
 router.delete('/', validateToken, CartController.deleteCartItem)
 router.patch('/count', validateToken, CartController.increaseAndDecreaseProductQuantity)
-
+router.patch('/', validateToken, CartController.changeToPurchaseOrderStatus)
 module.exports = router
