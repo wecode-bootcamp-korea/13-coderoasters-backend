@@ -1,5 +1,5 @@
 const { CartService } = require('../services')
-const { errorGenerator, validateFields } = require('../utils')
+const { errorGenerator } = require('../utils')
 
 const getCartItems = async (req, res, next) => {
   try {

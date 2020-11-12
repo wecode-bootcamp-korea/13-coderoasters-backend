@@ -1,5 +1,4 @@
 const prisma = require('../prisma')
-const { makeDataForCreate } = require('../utils')
 
 const findCartItems = (userId) => {
   return prisma.orders.findMany({
@@ -31,7 +30,7 @@ const convertCartItems = (order) => {
       'id': products.id,
       'name': products.name,
       'price':products.price,
-      'image':products.image,
+      'imageUrl':products.image_url,
       'quantity':quantity,
       'bagWeight':products.coffees.bag_weight,
       'ground':{
@@ -97,9 +96,9 @@ const deleteProductCart = async (fields) => {
 
   const [ orderProduct ] = await prisma.order_products.findMany({
     where: {
-      product_id: productId,
+      product_id: Number(productId),
       order_id: orderId,
-      ground_id: groundId
+      ground_id: Number(groundId)
     }
   })
 
