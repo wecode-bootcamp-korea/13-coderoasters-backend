@@ -7,6 +7,7 @@ router.get('/coffees', ProductController.getCoffeeList)
 router.get('/equipments', ProductController.getEquipmentList)
 router.get('/grounds', ProductController.getGroundList)
 router.get('/options', ProductController.getOptionList)
+router.get('/cluster', ProductController.updateClusterId)
 router.get('/:productId', ProductController.getProductDetail)
 
 module.exports = router
