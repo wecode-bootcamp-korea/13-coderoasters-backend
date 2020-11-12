@@ -5,12 +5,12 @@ const PRICE_MAP = {
   "I'm a total coffee nerd": 25,
 }
 
-const makeDataForRecommend = ({ price, roast_level, taste }) => {
+const makeDataForRecommend = (answers) => {
   return {
-    price: PRICE_MAP[price],
+    price: PRICE_MAP[answers[0]],
     coffees: {
-      roast_level,
-      taste,
+      roast_level: answers[1],
+      taste: answers[2],
     },
   }
 }

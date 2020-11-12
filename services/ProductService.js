@@ -112,9 +112,9 @@ const updateClusterId = async () => {
   await Promise.all(prismaRequest)
 }
 
-const findRecommendCoffee = async (payload) => {
-  const { decaf } = payload
-  const productObj = makeDataForRecommend(payload)
+const findRecommendCoffee = async (answers) => {
+  const decaf = answers[3] === 'Decaf' ? 1 : 0
+  const productObj = makeDataForRecommend(answers)
   const clusterId = getClusterId(productObj)
   const coffeeCount = await prisma.coffees.count({
     where: { cluster_id: clusterId, decaf },
@@ -126,6 +126,16 @@ const findRecommendCoffee = async (payload) => {
   return foundCoffee.product_id
 }
 
+const findSimilarCoffees = async (productId) => {
+  const coffee = await prisma.coffees.findOne({ where: { product_id: Number(productId) } })
+  const clusterId = coffee.cluster_id
+  return prisma.products.findMany({
+    take: 3,
+    where: { coffees: { cluster_id: clusterId }, NOT: { id: Number(productId) } },
+    include: { coffees: true },
+  })
+}
+
 module.exports = {
   findProduct,
   filterCoffees,
@@ -134,4 +144,6 @@ module.exports = {
   findOptions,
   updateClusterId,
   countCoffees,
+  findRecommendCoffee,
+  findSimilarCoffees,
 }

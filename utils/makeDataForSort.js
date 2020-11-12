@@ -7,9 +7,9 @@ const SORT_OPTION = {
 
 const makeDataForSort = (obj) => {
   try {
-    return { orderBy: SORT_OPTION[obj.order_by] }
+    return { orderBy: [SORT_OPTION[obj.order_by], { id: 'asc' }] }
   } catch (error) {
-    console.log(error)
+    next(error)
   }
 }
 

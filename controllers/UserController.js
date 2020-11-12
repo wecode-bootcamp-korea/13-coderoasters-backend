@@ -1,4 +1,5 @@
 const { AUTH_TOKEN_SALT } = process.env
+const { UsersDistinctFieldEnum } = require('@prisma/client')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { UserService } = require('../services')
@@ -9,11 +10,13 @@ const signUp = async (req, res, next) => {
     const { email, password, first_name, last_name, mobile_number } = req.body
     const validatedEmail = await UserService.emailValidation(email)
 
-    if (!validatedEmail) errorGenerator({ statusCode: 400, message: 'Please enter the correct email format' })
+    if (!validatedEmail)
+      errorGenerator({ statusCode: 400, message: 'Please enter the correct email format' })
 
     const validatedPassword = await UserService.passwordValidation(password)
 
-    if (!validatedPassword) errorGenerator({ statusCode: 400, message: 'Please enter at least 8 digits' })
+    if (!validatedPassword)
+      errorGenerator({ statusCode: 400, message: 'Please enter at least 8 digits' })
 
     const hashPassword = await bcrypt.hash(password, 12)
     const foundUser = await UserService.findUser({ email })
@@ -25,7 +28,7 @@ const signUp = async (req, res, next) => {
       password: hashPassword,
       first_name,
       last_name,
-      mobile_number
+      mobile_number,
     })
 
     res.status(201).json({
@@ -41,7 +44,7 @@ const logIn = async (req, res, next) => {
   try {
     const { email, password: inputPassword } = req.body
     const foundUser = await UserService.findUser({ email })
-    
+
     if (!foundUser) errorGenerator({ statusCode: 400, message: 'client input invalid' })
 
     const { id, password: hashedPassword } = foundUser
@@ -60,12 +63,23 @@ const googleLogIn = async (req, res, next) => {
   try {
     const { email } = req.payload
     const foundUser = await UserService.findUser({ email })
-    
+
     if (!foundUser) await UserService.createUser({ email })
-   
+
     const { id } = await UserService.findUser({ email })
     const token = jwt.sign({ id }, AUTH_TOKEN_SALT, { expiresIn: '24h' })
     res.status(200).json({ message: 'login success!', token })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const foundUserInfo = async (req, res, next) => {
+  try {
+    const { foundUser } = req
+    const { password, ...modifiedFoundUser } = foundUser
+
+    return res.status(200).json({ message: 'success', userInfo: modifiedFoundUser })
   } catch (err) {
     next(err)
   }
@@ -74,4 +88,5 @@ module.exports = {
   signUp,
   logIn,
   googleLogIn,
+  foundUserInfo,
 }

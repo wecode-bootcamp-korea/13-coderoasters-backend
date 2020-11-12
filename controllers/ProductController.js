@@ -73,10 +73,21 @@ const updateClusterId = async (req, res, next) => {
 
 const recommendCoffee = async (req, res, next) => {
   try {
-    const { payload } = req.body
-    const foundProductID = await ProductService.findRecommendCoffee(payload)
+    const { answers } = req.body
+    const foundProductID = await ProductService.findRecommendCoffee(answers)
 
     res.status(200).json({ message: 'recommended coffee found', foundProductID })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const getSimilarCoffeeList = async (req, res, next) => {
+  try {
+    const { productId } = req.params
+    const similarCoffees = await ProductService.findSimilarCoffees(productId)
+
+    res.status(200).json({ message: 'similar coffees found', similarCoffees })
   } catch (err) {
     next(err)
   }
@@ -90,4 +101,5 @@ module.exports = {
   getOptionList,
   updateClusterId,
   recommendCoffee,
+  getSimilarCoffeeList,
 }
