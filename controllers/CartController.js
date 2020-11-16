@@ -22,21 +22,22 @@ const createOrAddCartItem = async (req, res, next) => {
     const { productId, quantity, groundId } = req.body
     const cartItems = await CartService.findCartItems(userId)
 
-    if (!productId || !groundId || !quantity) errorGenerator({ statusCode: 400, message: 'invalid key error' })
+    if (!productId || !groundId || !quantity)
+      errorGenerator({ statusCode: 400, message: 'invalid key error' })
 
     if (cartItems.length) {
       const [{ id: orderId }] = cartItems
       const addedProductCart = await CartService.addProductCart({
-        orderId : orderId,
+        orderId: orderId,
         productId,
         quantity,
         groundId,
       })
-      
+
       return res.status(200).json({ message: 'success', cartItem: addedProductCart })
-    } 
-  
-    await CartService.createProductCart({
+    }
+
+    const createdProductCart = await CartService.createProductCart({
       userId,
       productId,
       quantity,
@@ -61,15 +62,15 @@ const deleteCartItem = async (req, res, next) => {
 
     const [{ id: orderId }] = cartItems
     const deletedProductCart = await CartService.deleteProductCart({
-      orderId : orderId,
+      orderId: orderId,
       userId,
       productId,
-      groundId
+      groundId,
     })
 
     if (!deletedProductCart) return res.status(400).json({ message: 'not found product' })
 
-    return res.status(200).json({ message: 'success', product : deletedProductCart })
+    return res.status(200).json({ message: 'success', product: deletedProductCart })
   } catch (err) {
     next(err)
   }
@@ -80,25 +81,28 @@ const increaseAndDecreaseProductQuantity = async (req, res, next) => {
     const { id: userId } = req.foundUser
     const { productId, groundId, quantity, action } = req.body
     const cartItems = await CartService.findCartItems(userId)
-    
-    if (!productId || !groundId || !quantity || !action) errorGenerator({ statusCode: 400, message: 'invalid key error' })
-    
-    if (!cartItems.length) return res.status(400).json({ message: 'not found cart', cartItems }) 
 
-    if (quantity === 1 && action === 'decrement') errorGenerator({ statusCode: 400, message: 'Less than the minimum quantity'})
+    if (!productId || !groundId || !quantity || !action)
+      errorGenerator({ statusCode: 400, message: 'invalid key error' })
 
-    if (quantity === 999  && action === 'increment') errorGenerator({ statusCode: 400, message: 'Less than the maximum quantity'})
-    
+    if (!cartItems.length) return res.status(400).json({ message: 'not found cart', cartItems })
+
+    if (quantity === 1 && action === 'decrement')
+      errorGenerator({ statusCode: 400, message: 'Less than the minimum quantity' })
+
+    if (quantity === 999 && action === 'increment')
+      errorGenerator({ statusCode: 400, message: 'Less than the maximum quantity' })
+
     const [{ id: orderId }] = cartItems
     const product = await CartService.productQuantityHandler({
-      orderId : orderId,
+      orderId: orderId,
       productId,
       groundId,
-      action
+      action,
     })
-    
+
     const { count } = product
-    if (!count) return res.status(400).json({ message: 'not found product' }) 
+    if (!count) return res.status(400).json({ message: 'not found product' })
 
     return res.status(200).json({ message: 'success', product })
   } catch (err) {
@@ -111,13 +115,13 @@ const changeToPurchaseOrderStatus = async (req, res, next) => {
     const { id: userId } = req.foundUser
     const cartItems = await CartService.findCartItems(userId)
 
-    if (!cartItems.length) return res.status(400).json({ message: 'not found cart', cartItems }) 
+    if (!cartItems.length) return res.status(400).json({ message: 'not found cart', cartItems })
 
     const [{ id: orderId }] = cartItems
     const order = await CartService.changeToPurchaseOrderStatus(orderId)
 
     return res.status(200).json({ message: 'success', order })
-  } catch (err) { 
+  } catch (err) {
     next(err)
   }
 }
@@ -127,5 +131,5 @@ module.exports = {
   createOrAddCartItem,
   deleteCartItem,
   increaseAndDecreaseProductQuantity,
-  changeToPurchaseOrderStatus
+  changeToPurchaseOrderStatus,
 }
